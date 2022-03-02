@@ -1,6 +1,5 @@
 import pygame
 
-
 # creates and handles the dino object
 class Dino:
     X_POS = 80
@@ -37,7 +36,7 @@ class Dino:
             self.running = False
             self.ducking = False
             self.jumping = True
-        elif (userInput[pygame.K_s] or userInput[pygame.K_DOWN] or userInput[pygame.KMOD_SHIFT]) and not self.jumping:
+        elif (userInput[pygame.K_s] or userInput[pygame.K_DOWN] or userInput[pygame.KMOD_LSHIFT]) and not self.jumping:
             self.running = False
             self.ducking = True
             self.jumping = False

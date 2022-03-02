@@ -5,14 +5,14 @@ import pygame
 class Texturer:
     def __init__(self, filename):
         self.RUNNING = [
-            pygame.image.load('Assets/{}/Dino/DinoRun1.png'.format(filename)),
-            pygame.image.load('Assets/{}/Dino/DinoRun2.png'.format(filename))
+            pygame.image.load('Assets/{}/Dino/DinoRunDefault1.png'.format(filename)),
+            pygame.image.load('Assets/{}/Dino/DinoRunDefault2.png'.format(filename))
         ]
         self.DUCKING = [
-            pygame.image.load('Assets/{}/Dino/DinoDuck1.png'.format(filename)),
-            pygame.image.load('Assets/{}/Dino/DinoDuck2.png'.format(filename))
+            pygame.image.load('Assets/{}/Dino/DinoDuckDefault1.png'.format(filename)),
+            pygame.image.load('Assets/{}/Dino/DinoDuckDefault2.png'.format(filename))
         ]
-        self.JUMPING = pygame.image.load('Assets/{}/Dino/DinoJump.png'.format(filename))
+        self.JUMPING = pygame.image.load('Assets/{}/Dino/DinoJumpDefault.png'.format(filename))
 
         self.SMALL_CACTI = [
             pygame.image.load('Assets/{}/Cactus/SmallCactus1.png'.format(filename)),
