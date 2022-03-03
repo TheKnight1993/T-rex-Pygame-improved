@@ -69,6 +69,7 @@ def mainLoop():  # the loop that plays the game
     player = Dino(game_textures)
     cloud = Cloud(SCREEN_WIDTH, game_speed, game_textures)
     death_count = 0
+
     def score():
         global points, game_speed, POINT_SPEED_MODIFIER, POINT_GAIN_MODIFIER, GAME_SPEED_MODIFIER, ghost_points
         global coin_cache
@@ -141,10 +142,9 @@ def mainLoop():  # the loop that plays the game
         clock.tick(60)
         pygame.display.update()
 
-# TODO: make menu functions with their own lööps
-# TODO: make and implement the other menu functions
 # TODO: difficulty, powerups and texture select
-# TODO: very unlikely: pvp
+# TODO: difficulty implementen, textures implementen
+# TODO: 1 glitch aanpassen
 
 
 def pauseMenu():  # right now a barebones copy of what is in what.py
@@ -268,6 +268,7 @@ def optionsMenu():
         pygame.display.update()
         clock.tick(60)
 
+
 def difficultyMenu():
     run = True
     click = False
@@ -330,6 +331,7 @@ def difficultyMenu():
                     click = True
         pygame.display.update()
         clock.tick(60)
+
 
 def textureMenu():
     run = True
@@ -529,7 +531,6 @@ def deathMenu():
                     click = True
         pygame.display.update()
         clock.tick(60)
-
 
 
 # difficulty
