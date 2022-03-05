@@ -5,30 +5,30 @@ import pygame
 class Texturer:
     def __init__(self, filename):
         self.RUNNING = [
-            pygame.image.load('Assets/{}/Dino/DinoRunDefault1.png'.format(filename)),
-            pygame.image.load('Assets/{}/Dino/DinoRunDefault2.png'.format(filename))
+            pygame.image.load('Assets/{}/Dino/DinoRun1.png'.format(filename)),
+            pygame.image.load('Assets/{}/Dino/DinoRun2.png'.format(filename))
         ]
         self.DUCKING = [
-            pygame.image.load('Assets/{}/Dino/DinoDuckDefault1.png'.format(filename)),
-            pygame.image.load('Assets/{}/Dino/DinoDuckDefault2.png'.format(filename))
+            pygame.image.load('Assets/{}/Dino/DinoDuck1.png'.format(filename)),
+            pygame.image.load('Assets/{}/Dino/DinoDuck2.png'.format(filename))
         ]
-        self.JUMPING = pygame.image.load('Assets/{}/Dino/DinoJumpDefault.png'.format(filename))
+        self.JUMPING = pygame.image.load('Assets/{}/Dino/DinoJump.png'.format(filename))
 
         self.SMALL_CACTI = [
-            pygame.image.load('Assets/{}/Cactus/SmallCactus1.png'.format(filename)),
-            pygame.image.load('Assets/{}/Cactus/SmallCactus2.png'.format(filename)),
-            pygame.image.load('Assets/{}/Cactus/SmallCactus3.png'.format(filename))
+            pygame.image.load('Assets/base_game/Cactus/SmallCactus1.png'),
+            pygame.image.load('Assets/base_game/Cactus/SmallCactus2.png'),
+            pygame.image.load('Assets/base_game/Cactus/SmallCactus3.png')
         ]
         self.LARGE_CACTI = [
-            pygame.image.load('Assets/{}/Cactus/LargeCactus1.png'.format(filename)),
-            pygame.image.load('Assets/{}/Cactus/LargeCactus2.png'.format(filename)),
-            pygame.image.load('Assets/{}/Cactus/LargeCactus3.png'.format(filename))
+            pygame.image.load('Assets/base_game/Cactus/LargeCactus1.png'),
+            pygame.image.load('Assets/base_game/Cactus/LargeCactus2.png'),
+            pygame.image.load('Assets/base_game/Cactus/LargeCactus3.png')
         ]
         self.BIRD = [
-            pygame.image.load('Assets/{}/Bird/Bird1.png'.format(filename)),
-            pygame.image.load('Assets/{}/Bird/Bird2.png'.format(filename))
+            pygame.image.load('Assets/base_game/Bird/Bird1.png'),
+            pygame.image.load('Assets/base_game/Bird/Bird2.png')
         ]
 
-        self.CLOUD = pygame.image.load('Assets/{}/Other/Cloud.png'.format(filename))
-        self.BG = pygame.image.load('Assets/{}/Other/Track.png'.format(filename))
+        self.CLOUD = pygame.image.load('Assets/base_game/Other/Cloud.png')
+        self.BG = pygame.image.load('Assets/base_game/Other/Track.png')
 

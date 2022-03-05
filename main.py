@@ -278,7 +278,7 @@ def difficultyMenu():
         SCREEN.blit(background_image, (0, 0))
         # title_font = pygame.font.Font('Assets/font/PressStart2P-Regular.ttf', 20)
         draw_text_topleft("The T-Rex Runner Game", title_font, (50, 50, 50), SCREEN, 100, 50)
-        draw_text_topleft("difficulty menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
+        draw_text_topleft("Difficulty menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
         draw_text_topleft("Select your difficulty:", button_font, (50, 50, 50), SCREEN, 50, 150)
         draw_text_topleft("Selected difficulty: " + selectedDifficulty, button_font, (50, 50, 50), SCREEN, 50, 400)
         mx, my = pygame.mouse.get_pos()
@@ -370,12 +370,12 @@ def textureMenu():
         pygame.draw.rect(SCREEN, button_color, button_9, 3)
         pygame.draw.rect(SCREEN, button_color, button_back, 3)
 
-        dinoThemeDefault = pygame.image.load('Assets/base_game/Dino/DinoJumpDefault.png').convert_alpha()
-        dinoThemeBlue = pygame.image.load('Assets/base_game/Dino/DinoJumpBlue.png').convert_alpha()
-        dinoThemeRed = pygame.image.load('Assets/base_game/Dino/DinoJumpRed.png').convert_alpha()
-        dinoThemeGreen = pygame.image.load('Assets/base_game/Dino/DinoJumpGreen.png').convert_alpha()
-        dinoThemeMNBlue = pygame.image.load('Assets/base_game/Dino/DinoJumpMNBlue.png').convert_alpha()
-        dinoThemeRainbow = pygame.image.load('Assets/base_game/Dino/DinoJumpRainbow.png').convert_alpha()
+        dinoThemeDefault = pygame.image.load('Assets/base_game/Dino/DinoJump.png').convert_alpha()
+        dinoThemeBlue = pygame.image.load('Assets/blue/Dino/DinoJump.png').convert_alpha()
+        dinoThemeRed = pygame.image.load('Assets/red/Dino/DinoJump.png').convert_alpha()
+        dinoThemeGreen = pygame.image.load('Assets/green/Dino/DinoJump.png').convert_alpha()
+        dinoThemeMNBlue = pygame.image.load('Assets/midnight/Dino/DinoJump.png').convert_alpha()
+        dinoThemeRainbow = pygame.image.load('Assets/rainbow/Dino/DinoJump.png').convert_alpha()
         themeLock = pygame.image.load('Assets/images/themeLock.png').convert_alpha()
         themeLockHover = pygame.image.load('Assets/images/themeLock.png').convert_alpha()
 
@@ -561,6 +561,15 @@ def set_textures(filename):  # simple function to change the textures the game u
 
 
 def check_textures():  # function to check if a texture is unlocked or not
+    data_file = open('data.json', 'r+')
+
+    json_data = json.load(data_file)
+    texture_data = json_data['textures']
+
+    total_textures = len(texture_data)
+    for i in range(0, total_textures):
+        texture = texture_data[i]
+
     pass
 
 
