@@ -14,6 +14,7 @@ POINT_SPEED_MODIFIER = 100  # POINT_SPEED_MODIFIER takes a numeric value, higher
 POINT_GAIN_MODIFIER = 1  # POINT_GAIN_MODIFIER takes a numeric value, higher values give less points
 GAME_SPEED_MODIFIER = 0.8
 points = 0
+finalPoints = 0
 ghost_points = 0
 coin_cache = 0
 game_speed = 10
@@ -37,8 +38,15 @@ clock = pygame.time.Clock()
 texture_file = 'base_game'
 game_textures = Texturer(texture_file)
 
+
+invisFrame = False
 selectedDifficulty = "Medium"
 selectedTheme = "Default theme"
+jumpPowerupActivated = False
+shieldPowerupActivated = False
+scorePowerupActivated = True
+powerupActivated = False
+jumpPowerupStartTime = 0
 
 
 def draw_text_topleft(text, font, color, surface, x, y):
@@ -64,7 +72,10 @@ def draw_text(text, font, color, surface, x, y):
 
 def mainLoop():  # the loop that plays the game
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, coin_cache
-
+    global livesAmount, invisFrame
+    global JUMPAMOUNT, livesAmount
+    global jumpPowerupActivated, shieldPowerupActivated, scorePowerupActivated, powerupActivated, jumpPowerupStartTime
+    global POINT_GAIN_MODIFIER, finalPoints
     run = True
     player = Dino(game_textures)
     cloud = Cloud(SCREEN_WIDTH, game_speed, game_textures)
@@ -87,7 +98,6 @@ def mainLoop():  # the loop that plays the game
 
     def background():
         global x_pos_bg, y_pos_bg
-
         image_width = game_textures.BG.get_width()
         SCREEN.blit(game_textures.BG, (x_pos_bg, y_pos_bg))
         SCREEN.blit(game_textures.BG, (image_width + x_pos_bg, y_pos_bg))
@@ -122,13 +132,47 @@ def mainLoop():  # the loop that plays the game
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
             obstacle.update(game_speed, obstacles)
-            if player.dino_rect.colliderect(obstacle.rect):
+
+            if powerupActivated == True:
+                randomPowerup = random.randint(0, 2)
+                if randomPowerup == 0:
+                    shieldPowerupActivated = True
+                if randomPowerup == 1:
+                    jumpPowerupActivated = True
+                if randomPowerup == 2:
+                    scorePowerupActivated = True
+
+            if shieldPowerupActivated:
+                player.livesAmount += 1
+                shieldPowerupActivated = False
+            if jumpPowerupActivated:
+                player.JUMPAMOUNT += 1
+                jumpPowerupActivated = False
+                player.jumpPowerup = True
+                jumpPowerupStartTime = pygame.time.get_ticks()
+            if (pygame.time.get_ticks() - jumpPowerupStartTime) > 20000:
+                player.JUMPAMOUNT -= 1
+                player.jumpPowerup = False
+            if scorePowerupActivated:
+                scorePowerupActivated = False
+                POINT_GAIN_MODIFIER = POINT_GAIN_MODIFIER * 0.5
+            if player.dino_rect.colliderect(obstacle.rect) and invisFrame == False:
+                player.livesAmount -= 1
+                invisFrame = True
+            if not player.dino_rect.colliderect(obstacle.rect) and invisFrame == True:
+                invisFrame = False
+            if player.livesAmount < 1:
                 obstacles.pop()
-                pygame.time.delay(500)
+                pygame.time.delay(250)
                 save_coins(coin_cache)
                 coin_cache = 0
-                exit(100)
                 death_count += 1
+                player.jumpAmount = 1
+                finalPoints = points
+                points = 0
+                ghost_points = 0
+                game_speed = 10
+                player.livesAmount = 1
                 deathMenu()
 
         background()
@@ -141,17 +185,11 @@ def mainLoop():  # the loop that plays the game
         clock.tick(60)
         pygame.display.update()
 
-# TODO: make menu functions with their own lööps
-# TODO: make and implement the other menu functions
-# TODO: difficulty, powerups and texture select
-# TODO: very unlikely: pvp
-
 
 def pauseMenu():  # right now a barebones copy of what is in what.py
     run = True
     while run:
         SCREEN.fill((200, 200, 200))
-        # font = pygame.font.Font('Assets/font/PressStart2P-Regular.ttf', 30)
         text = font.render('Press Any Key To Resume', True, (0, 0, 0))
         text_rect = text.get_rect()
         text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 20)
@@ -172,11 +210,19 @@ def mainMenu():  # has to become the true main menu, that goes to all the otehr 
     run = True
     click = False
     while run:
+
         SCREEN.fill((0, 0, 0))
         SCREEN.blit(background_image, (0, 0))
         # title_font = pygame.font.Font('Assets/font/PressStart2P-Regular.ttf', 20)
         draw_text_topleft("The T-Rex Runner Game", title_font, (50, 50, 50), SCREEN, 100, 50)
         draw_text_topleft("Main menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
+
+        draw_text_topright(str(get_coins()), price_font, (50, 50, 50), SCREEN, 1050, 47)
+        coin = pygame.image.load('Assets/images/coin.jpg').convert_alpha()
+        coin = pygame.transform.scale(coin, (35, 35))
+        SCREEN.blit(coin, (1050, 35))
+
+
         mx, my = pygame.mouse.get_pos()
         button_play = pygame.Rect(50, 175, 200, 30)
         button_options = pygame.Rect(50, 215, 200, 30)
@@ -227,6 +273,12 @@ def optionsMenu():
         # title_font = pygame.font.Font('Assets/font/PressStart2P-Regular.ttf', 20)
         draw_text_topleft("The T-Rex Runner Game", title_font, (50, 50, 50), SCREEN, 100, 50)
         draw_text_topleft("Options menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
+
+        draw_text_topright(str(get_coins()), price_font, (50, 50, 50), SCREEN, 1050, 47)
+        coin = pygame.image.load('Assets/images/coin.jpg').convert_alpha()
+        coin = pygame.transform.scale(coin, (35, 35))
+        SCREEN.blit(coin, (1050, 35))
+
         mx, my = pygame.mouse.get_pos()
         button_difficulty = pygame.Rect(50, 175, 200, 30)
         button_themes = pygame.Rect(50, 215, 200, 30)
@@ -268,6 +320,7 @@ def optionsMenu():
         pygame.display.update()
         clock.tick(60)
 
+
 def difficultyMenu():
     run = True
     click = False
@@ -277,9 +330,15 @@ def difficultyMenu():
         SCREEN.blit(background_image, (0, 0))
         # title_font = pygame.font.Font('Assets/font/PressStart2P-Regular.ttf', 20)
         draw_text_topleft("The T-Rex Runner Game", title_font, (50, 50, 50), SCREEN, 100, 50)
-        draw_text_topleft("difficulty menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
+        draw_text_topleft("Difficulty menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
         draw_text_topleft("Select your difficulty:", button_font, (50, 50, 50), SCREEN, 50, 150)
         draw_text_topleft("Selected difficulty: " + selectedDifficulty, button_font, (50, 50, 50), SCREEN, 50, 400)
+
+        draw_text_topright(str(get_coins()), price_font, (50, 50, 50), SCREEN, 1050, 47)
+        coin = pygame.image.load('Assets/images/coin.jpg').convert_alpha()
+        coin = pygame.transform.scale(coin, (35, 35))
+        SCREEN.blit(coin, (1050, 35))
+
         mx, my = pygame.mouse.get_pos()
         button_easy = pygame.Rect(50, 175, 200, 30)
         button_medium = pygame.Rect(50, 215, 200, 30)
@@ -331,6 +390,7 @@ def difficultyMenu():
         pygame.display.update()
         clock.tick(60)
 
+
 def textureMenu():
     run = True
     click = False
@@ -342,6 +402,12 @@ def textureMenu():
         draw_text_topleft("Theme menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
         draw_text_topleft("Select your Theme:", button_font, (50, 50, 50), SCREEN, 50, 150)
         draw_text_topleft("Selected Theme: " + selectedTheme, button_font, (50, 50, 50), SCREEN, 300, 510)
+
+        draw_text_topright(str(get_coins()), price_font, (50, 50, 50), SCREEN, 1050, 47)
+        coin = pygame.image.load('Assets/images/coin.jpg').convert_alpha()
+        coin = pygame.transform.scale(coin, (35, 35))
+        SCREEN.blit(coin, (1050, 35))
+
         mx, my = pygame.mouse.get_pos()
 
         button_default = pygame.Rect(50, 175, 100, 100)
@@ -350,9 +416,9 @@ def textureMenu():
         button_green = pygame.Rect(50, 285, 100, 100)
         button_midnight_blue = pygame.Rect(160, 285, 100, 100)
         button_rainbow = pygame.Rect(270, 285, 100, 100)
-        button_7 = pygame.Rect(50, 395, 100, 100)
-        button_8 = pygame.Rect(160, 395, 100, 100)
-        button_9 = pygame.Rect(270, 395, 100, 100)
+        button_mario = pygame.Rect(50, 395, 100, 100)
+        button_luigi = pygame.Rect(160, 395, 100, 100)
+        button_toad = pygame.Rect(270, 395, 100, 100)
         button_back = pygame.Rect(50, 500, 200, 30)
 
         draw_text_topleft("Back", button_font, (50, 50, 50), SCREEN, 60, 510)
@@ -363,9 +429,9 @@ def textureMenu():
         pygame.draw.rect(SCREEN, button_color, button_green, 3)
         pygame.draw.rect(SCREEN, button_color, button_midnight_blue, 3)
         pygame.draw.rect(SCREEN, button_color, button_rainbow, 3)
-        pygame.draw.rect(SCREEN, button_color, button_7, 3)
-        pygame.draw.rect(SCREEN, button_color, button_8, 3)
-        pygame.draw.rect(SCREEN, button_color, button_9, 3)
+        pygame.draw.rect(SCREEN, button_color, button_mario, 3)
+        pygame.draw.rect(SCREEN, button_color, button_luigi, 3)
+        pygame.draw.rect(SCREEN, button_color, button_toad, 3)
         pygame.draw.rect(SCREEN, button_color, button_back, 3)
 
         dinoThemeDefault = pygame.image.load('Assets/base_game/Dino/DinoJumpDefault.png').convert_alpha()
@@ -375,13 +441,18 @@ def textureMenu():
         dinoThemeMNBlue = pygame.image.load('Assets/base_game/Dino/DinoJumpMNBlue.png').convert_alpha()
         dinoThemeRainbow = pygame.image.load('Assets/base_game/Dino/DinoJumpRainbow.png').convert_alpha()
         themeLock = pygame.image.load('Assets/images/themeLock.png').convert_alpha()
-        themeLockHover = pygame.image.load('Assets/images/themeLock.png').convert_alpha()
+        dinoMario = pygame.image.load('Assets/base_game/Dino/Mario2.png').convert_alpha()
+        dinoLuigi = pygame.image.load('Assets/base_game/Dino/Luigi2.png').convert_alpha()
+        dinoToad = pygame.image.load('Assets/base_game/Dino/Toad2.png').convert_alpha()
 
         dinoThemeBlue = pygame.transform.scale(dinoThemeBlue, (235, 250))
         dinoThemeRed = pygame.transform.scale(dinoThemeRed, (235, 250))
         dinoThemeGreen = pygame.transform.scale(dinoThemeGreen, (235, 250))
         dinoThemeMNBlue = pygame.transform.scale(dinoThemeMNBlue, (235, 250))
         dinoThemeRainbow = pygame.transform.scale(dinoThemeRainbow, (235, 250))
+        dinoMario = pygame.transform.scale(dinoMario, (70, 90))
+        dinoLuigi = pygame.transform.scale(dinoLuigi, (70, 90))
+        dinoToad = pygame.transform.scale(dinoToad, (70, 90))
         themeLock = pygame.transform.scale(themeLock, (125, 125))
         themeLockHover = pygame.transform.scale(themeLock, (100, 100))
 
@@ -391,12 +462,18 @@ def textureMenu():
         SCREEN.blit(dinoThemeGreen, (-15, 270))
         SCREEN.blit(dinoThemeMNBlue, (95, 270))
         SCREEN.blit(dinoThemeRainbow, (205, 270))
+        SCREEN.blit(dinoMario, (60, 400))
+        SCREEN.blit(dinoLuigi, (170, 400))
+        SCREEN.blit(dinoToad, (280, 400))
 
         blueThemeUnlocked = True
         redThemeUnlocked = False
         greenThemeUnlocked = False
         mnblueThemeUnlocked = False
         rainbowThemeUnlocked = False
+        marioThemeUnlocked = False
+        luigiThemeUnlocked = True
+        toadThemeUnlocked = False
 
         if blueThemeUnlocked == False:
             SCREEN.blit(themeLock, (147, 162))
@@ -408,6 +485,12 @@ def textureMenu():
             SCREEN.blit(themeLock, (147, 272))
         if rainbowThemeUnlocked == False:
             SCREEN.blit(themeLock, (257, 272))
+        if marioThemeUnlocked == False:
+            SCREEN.blit(themeLock, (37, 382))
+        if luigiThemeUnlocked == False:
+            SCREEN.blit(themeLock, (147, 382))
+        if toadThemeUnlocked == False:
+            SCREEN.blit(themeLock, (257, 382))
 
         if button_default.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_default)
@@ -476,6 +559,42 @@ def textureMenu():
             else:
                 # unlock rainbow theme
                 pass
+        if button_mario.collidepoint((mx, my)):
+            pygame.draw.rect(SCREEN, button_color, button_mario)
+            SCREEN.blit(dinoMario, (60, 400))
+            if marioThemeUnlocked == False:
+                SCREEN.blit(themeLockHover, (48, 382))
+                draw_text_topleft("10000", price_font, (218, 165, 32), SCREEN, 68, 472)
+            if click and marioThemeUnlocked == True:
+                selectedTheme = "Mario theme"
+                pass
+            else:
+                # unlock green theme
+                pass
+        if button_luigi.collidepoint((mx, my)):
+            pygame.draw.rect(SCREEN, button_color, button_luigi)
+            SCREEN.blit(dinoLuigi, (170, 400))
+            if luigiThemeUnlocked == False:
+                SCREEN.blit(themeLockHover, (158, 382))
+                draw_text_topleft("25000", price_font, (218, 165, 32), SCREEN, 178, 472)
+            if click and luigiThemeUnlocked == True:
+                selectedTheme = "Luigi theme"
+                pass
+            else:
+                # unlock green theme
+                pass
+        if button_toad.collidepoint((mx, my)):
+            pygame.draw.rect(SCREEN, button_color, button_toad)
+            SCREEN.blit(dinoToad, (280, 400))
+            if toadThemeUnlocked == False:
+                SCREEN.blit(themeLockHover, (268, 382))
+                draw_text_topleft("99999", price_font, (218, 165, 32), SCREEN, 288, 472)
+            if click and toadThemeUnlocked == True:
+                selectedTheme = "Toad theme"
+                pass
+            else:
+                # unlock green theme
+                pass
         if button_back.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_back)
             draw_text_topleft("Back", button_font, (50, 50, 50), SCREEN, 60, 510)
@@ -503,6 +622,12 @@ def deathMenu():
         # title_font = pygame.font.Font('Assets/font/PressStart2P-Regular.ttf', 20)
         draw_text_topleft("The T-Rex Runner Game", title_font, (50, 50, 50), SCREEN, 100, 50)
         draw_text_topleft("GAME OVER", game_over_font, (50, 50, 50), SCREEN, 60, 275)
+        draw_text_topleft("score: " + str(finalPoints), font, (50, 50, 50), SCREEN, 60, 400)
+        draw_text_topleft("highscore: " , font, (50, 50, 50), SCREEN, 60, 425)
+        draw_text_topright(str(get_coins()), price_font, (50, 50, 50), SCREEN, 1050, 47)
+        coin = pygame.image.load('Assets/images/coin.jpg').convert_alpha()
+        coin = pygame.transform.scale(coin, (35, 35))
+        SCREEN.blit(coin, (1050, 35))
 
         mx, my = pygame.mouse.get_pos()
         button_mainmenu = pygame.Rect(50, 500, 200, 30)
@@ -529,7 +654,6 @@ def deathMenu():
                     click = True
         pygame.display.update()
         clock.tick(60)
-
 
 
 # difficulty
