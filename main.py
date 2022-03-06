@@ -9,10 +9,9 @@ pygame.init()
 # constants and preset variables
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
-DIFFICULTY_SELECTOR = 3  # difficulty selector takes a numeric value, can be set via the menu
-POINT_SPEED_MODIFIER = 100  # POINT_SPEED_MODIFIER takes a numeric value, higher values speed up the game less
-POINT_GAIN_MODIFIER = 1  # POINT_GAIN_MODIFIER takes a numeric value, higher values give less points
-GAME_SPEED_MODIFIER = 0.8
+POINT_SPEED_MODIFIER = 100  # takes a numeric value, higher values speed up the game less
+POINT_GAIN_MODIFIER = 1  # takes a numeric value, higher values give less points
+GAME_SPEED_MODIFIER = 0.8  # takes a numeric value, higher values give a more difficult game
 points = 0
 ghost_points = 0
 coin_cache = 0
@@ -33,7 +32,7 @@ price_font = pygame.font.Font('Assets/font/PressStart2P-Regular.ttf', 15)
 font = pygame.font.Font('Assets/font/PressStart2P-Regular.ttf', 20)
 button_color = (200, 200, 200)
 clock = pygame.time.Clock()
-# texture file constants/variables
+# texture file variables
 texture_file = 'base_game'
 game_textures = Texturer(texture_file)
 
@@ -125,11 +124,16 @@ def mainLoop():  # the loop that plays the game
             obstacle.update(game_speed, obstacles)
             if player.dino_rect.colliderect(obstacle.rect):
                 obstacles.pop()
-                pygame.time.delay(500)
+                pygame.time.delay(250)
                 save_coins(coin_cache)
                 coin_cache = 0
-                exit(100)
                 death_count += 1
+                player.jumpAmount = 1
+                finalPoints = points
+                points = 0
+                ghost_points = 0
+                game_speed = 10
+                player.livesAmount = 1
                 deathMenu()
 
         background()
@@ -142,8 +146,7 @@ def mainLoop():  # the loop that plays the game
         clock.tick(60)
         pygame.display.update()
 
-# TODO: difficulty, powerups and texture select
-# TODO: difficulty implementen, textures implementen
+# TODO: powerups
 # TODO: 1 glitch aanpassen
 
 
@@ -270,6 +273,7 @@ def optionsMenu():
 
 
 def difficultyMenu():
+    global POINT_SPEED_MODIFIER, POINT_GAIN_MODIFIER, GAME_SPEED_MODIFIER
     run = True
     click = False
     global selectedDifficulty
@@ -301,20 +305,25 @@ def difficultyMenu():
             draw_text_topleft("Easy", button_font, (50, 50, 50), SCREEN, 60, 185)
             if click:
                 selectedDifficulty = "Easy"
-                pass
-
+                POINT_SPEED_MODIFIER = 400
+                POINT_GAIN_MODIFIER = 5
+                GAME_SPEED_MODIFIER = 0.4
         if button_medium.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_medium)
             draw_text_topleft("Medium", button_font, (50, 50, 50), SCREEN, 60, 225)
             if click:
                 selectedDifficulty = "Medium"
-                pass
+                POINT_SPEED_MODIFIER = 200
+                POINT_GAIN_MODIFIER = 3
+                GAME_SPEED_MODIFIER = 0.8
         if button_hard.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_hard)
             draw_text_topleft("Hard", button_font, (50, 50, 50), SCREEN, 60, 265)
             if click:
                 selectedDifficulty = "Hard"
-                pass
+                POINT_SPEED_MODIFIER = 100
+                POINT_GAIN_MODIFIER = 1
+                GAME_SPEED_MODIFIER = 0.8
         if button_back.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_back)
             draw_text_topleft("Back", button_font, (50, 50, 50), SCREEN, 60, 510)
@@ -338,12 +347,19 @@ def textureMenu():
     click = False
     global selectedTheme
     while run:
+        global game_textures
         SCREEN.fill((0, 0, 0))
         SCREEN.blit(background_image, (0, 0))
         draw_text_topleft("The T-Rex Runner Game", title_font, (50, 50, 50), SCREEN, 100, 50)
         draw_text_topleft("Theme menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
         draw_text_topleft("Select your Theme:", button_font, (50, 50, 50), SCREEN, 50, 150)
         draw_text_topleft("Selected Theme: " + selectedTheme, button_font, (50, 50, 50), SCREEN, 300, 510)
+
+        # draw_text_topright(str(get_coins()), price_font, (50, 50, 50), SCREEN, 1050, 47)
+        # coin = pygame.image.load('Assets/images/coin.jpg').convert_alpha()
+        # coin = pygame.transform.scale(coin, (35, 35))
+        # SCREEN.blit(coin, (1050, 35))
+
         mx, my = pygame.mouse.get_pos()
 
         button_default = pygame.Rect(50, 175, 100, 100)
@@ -352,9 +368,9 @@ def textureMenu():
         button_green = pygame.Rect(50, 285, 100, 100)
         button_midnight_blue = pygame.Rect(160, 285, 100, 100)
         button_rainbow = pygame.Rect(270, 285, 100, 100)
-        button_7 = pygame.Rect(50, 395, 100, 100)
-        button_8 = pygame.Rect(160, 395, 100, 100)
-        button_9 = pygame.Rect(270, 395, 100, 100)
+        button_mario = pygame.Rect(50, 395, 100, 100)
+        button_luigi = pygame.Rect(160, 395, 100, 100)
+        button_toad = pygame.Rect(270, 395, 100, 100)
         button_back = pygame.Rect(50, 500, 200, 30)
 
         draw_text_topleft("Back", button_font, (50, 50, 50), SCREEN, 60, 510)
@@ -365,51 +381,69 @@ def textureMenu():
         pygame.draw.rect(SCREEN, button_color, button_green, 3)
         pygame.draw.rect(SCREEN, button_color, button_midnight_blue, 3)
         pygame.draw.rect(SCREEN, button_color, button_rainbow, 3)
-        pygame.draw.rect(SCREEN, button_color, button_7, 3)
-        pygame.draw.rect(SCREEN, button_color, button_8, 3)
-        pygame.draw.rect(SCREEN, button_color, button_9, 3)
+        pygame.draw.rect(SCREEN, button_color, button_mario, 3)
+        pygame.draw.rect(SCREEN, button_color, button_luigi, 3)
+        pygame.draw.rect(SCREEN, button_color, button_toad, 3)
         pygame.draw.rect(SCREEN, button_color, button_back, 3)
 
         dinoThemeDefault = pygame.image.load('Assets/base_game/Dino/DinoJump.png').convert_alpha()
+        dinoThemeSize = dinoThemeDefault.get_size()
         dinoThemeBlue = pygame.image.load('Assets/blue/Dino/DinoJump.png').convert_alpha()
         dinoThemeRed = pygame.image.load('Assets/red/Dino/DinoJump.png').convert_alpha()
         dinoThemeGreen = pygame.image.load('Assets/green/Dino/DinoJump.png').convert_alpha()
         dinoThemeMNBlue = pygame.image.load('Assets/midnight/Dino/DinoJump.png').convert_alpha()
         dinoThemeRainbow = pygame.image.load('Assets/rainbow/Dino/DinoJump.png').convert_alpha()
         themeLock = pygame.image.load('Assets/images/themeLock.png').convert_alpha()
-        themeLockHover = pygame.image.load('Assets/images/themeLock.png').convert_alpha()
+        dinoMario = pygame.image.load('Assets/mario/Dino/DinoRun1.png').convert_alpha()
+        dinoLuigi = pygame.image.load('Assets/luigi/Dino/DinoRun1.png').convert_alpha()
+        dinoToad = pygame.image.load('Assets/toad/Dino/DinoRun1.png').convert_alpha()
 
-        dinoThemeBlue = pygame.transform.scale(dinoThemeBlue, (235, 250))
-        dinoThemeRed = pygame.transform.scale(dinoThemeRed, (235, 250))
-        dinoThemeGreen = pygame.transform.scale(dinoThemeGreen, (235, 250))
-        dinoThemeMNBlue = pygame.transform.scale(dinoThemeMNBlue, (235, 250))
-        dinoThemeRainbow = pygame.transform.scale(dinoThemeRainbow, (235, 250))
+        dinoThemeBlue = pygame.transform.scale(dinoThemeBlue, dinoThemeSize)
+        dinoThemeRed = pygame.transform.scale(dinoThemeRed, dinoThemeSize)
+        dinoThemeGreen = pygame.transform.scale(dinoThemeGreen, dinoThemeSize)
+        dinoThemeMNBlue = pygame.transform.scale(dinoThemeMNBlue, dinoThemeSize)
+        dinoThemeRainbow = pygame.transform.scale(dinoThemeRainbow, dinoThemeSize)
+        dinoMario = pygame.transform.scale(dinoMario, (70, 90))
+        dinoLuigi = pygame.transform.scale(dinoLuigi, (70, 90))
+        dinoToad = pygame.transform.scale(dinoToad, (70, 90))
         themeLock = pygame.transform.scale(themeLock, (125, 125))
         themeLockHover = pygame.transform.scale(themeLock, (100, 100))
 
         SCREEN.blit(dinoThemeDefault, (60, 178))
-        SCREEN.blit(dinoThemeBlue, (95, 160))
-        SCREEN.blit(dinoThemeRed, (205, 160))
-        SCREEN.blit(dinoThemeGreen, (-15, 270))
-        SCREEN.blit(dinoThemeMNBlue, (95, 270))
-        SCREEN.blit(dinoThemeRainbow, (205, 270))
+        SCREEN.blit(dinoThemeBlue, (165, 175))
+        SCREEN.blit(dinoThemeRed, (275, 175))
+        SCREEN.blit(dinoThemeGreen, (55, 285))
+        SCREEN.blit(dinoThemeMNBlue, (165, 285))
+        SCREEN.blit(dinoThemeRainbow, (275, 285))
+        SCREEN.blit(dinoMario, (60, 400))
+        SCREEN.blit(dinoLuigi, (170, 400))
+        SCREEN.blit(dinoToad, (280, 400))
 
-        blueThemeUnlocked = True
-        redThemeUnlocked = False
-        greenThemeUnlocked = False
-        mnblueThemeUnlocked = False
-        rainbowThemeUnlocked = False
+        blueThemeUnlocked, blueThemePrice = check_textures("blue")
+        redThemeUnlocked, redThemePrice = check_textures("red")
+        greenThemeUnlocked, greenThemePrice = check_textures("green")
+        mnblueThemeUnlocked, mnblueThemePrice = check_textures("midnight")
+        rainbowThemeUnlocked, rainbowThemePrice = check_textures("rainbow")
+        marioThemeUnlocked, marioThemePrice = check_textures("mario")
+        luigiThemeUnlocked, luigiThemePrice = check_textures("luigi")
+        toadThemeUnlocked, toadThemePrice = check_textures("toad")
 
-        if blueThemeUnlocked == False:
+        if not blueThemeUnlocked:
             SCREEN.blit(themeLock, (147, 162))
-        if redThemeUnlocked == False:
+        if not redThemeUnlocked:
             SCREEN.blit(themeLock, (257, 162))
-        if greenThemeUnlocked == False:
+        if not greenThemeUnlocked:
             SCREEN.blit(themeLock, (37, 272))
-        if mnblueThemeUnlocked == False:
+        if not mnblueThemeUnlocked:
             SCREEN.blit(themeLock, (147, 272))
-        if rainbowThemeUnlocked == False:
+        if not rainbowThemeUnlocked:
             SCREEN.blit(themeLock, (257, 272))
+        if not marioThemeUnlocked:
+            SCREEN.blit(themeLock, (37, 382))
+        if not luigiThemeUnlocked:
+            SCREEN.blit(themeLock, (147, 382))
+        if not toadThemeUnlocked:
+            SCREEN.blit(themeLock, (257, 382))
 
         if button_default.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_default)
@@ -417,67 +451,104 @@ def textureMenu():
 
             if click:
                 selectedTheme = "Default theme"
+
                 pass
         if button_blue.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_blue)
-            SCREEN.blit(dinoThemeBlue, (95, 160))
+            SCREEN.blit(dinoThemeBlue, (165, 175))
             if blueThemeUnlocked == False:
                 SCREEN.blit(themeLockHover, (158, 162))
-                draw_text_topleft("1000", price_font, (218, 165, 32), SCREEN, 178, 252)
-            if click and blueThemeUnlocked == True:
+                draw_text_topleft(blueThemePrice, price_font, (218, 165, 32), SCREEN, 178, 252)
+            if click and blueThemeUnlocked:
                 selectedTheme = "Blue theme"
-                pass
-            else:
-                # unlock blue theme
-                pass
+                game_textures = Texturer("blue")
+            elif click and not blueThemeUnlocked:
+                unlock_texture("blue")
+                game_textures = Texturer("blue")
         if button_red.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_red)
-            SCREEN.blit(dinoThemeRed, (205, 160))
+            SCREEN.blit(dinoThemeRed, (275, 175))
             if redThemeUnlocked == False:
                 SCREEN.blit(themeLockHover, (268, 162))
-                draw_text_topleft("2000", price_font, (218, 165, 32), SCREEN, 288, 252)
-            if click and redThemeUnlocked == True:
+                draw_text_topleft(redThemePrice, price_font, (218, 165, 32), SCREEN, 288, 252)
+            if click and redThemeUnlocked:
                 selectedTheme = "Red theme"
-                pass
-            else:
-                # unlock red theme
-                pass
+                game_textures = Texturer("red")
+            elif click and not redThemeUnlocked:
+                unlock_texture("red")
+                game_textures = Texturer("red")
         if button_green.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_green)
-            SCREEN.blit(dinoThemeGreen, (-15, 270))
+            SCREEN.blit(dinoThemeGreen, (55, 285))
             if greenThemeUnlocked == False:
                 SCREEN.blit(themeLockHover, (48, 272))
-                draw_text_topleft("3000", price_font, (218, 165, 32), SCREEN, 68, 362)
-            if click and greenThemeUnlocked == True:
+                draw_text_topleft(greenThemePrice, price_font, (218, 165, 32), SCREEN, 68, 362)
+            if click and greenThemeUnlocked:
                 selectedTheme = "Green theme"
-                pass
-            else:
-                # unlock green theme
-                pass
+                game_textures = Texturer("green")
+            elif click and not greenThemeUnlocked:
+                unlock_texture("green")
+                game_textures = Texturer("green")
         if button_midnight_blue.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_midnight_blue)
-            SCREEN.blit(dinoThemeMNBlue, (95, 270))
+            SCREEN.blit(dinoThemeMNBlue, (165, 285))
             if mnblueThemeUnlocked == False:
                 SCREEN.blit(themeLockHover, (158, 272))
-                draw_text_topleft("4000", price_font, (218, 165, 32), SCREEN, 178, 362)
-            if click and mnblueThemeUnlocked == True:
-                selectedTheme = "Default"
-                pass
-            else:
-                # unlock mnblue theme
-                pass
+                draw_text_topleft(mnblueThemePrice, price_font, (218, 165, 32), SCREEN, 178, 362)
+            if click and mnblueThemeUnlocked:
+                selectedTheme = "Midnight Blue theme"
+                game_textures = Texturer("midnight")
+            elif click and not mnblueThemeUnlocked:
+                unlock_texture("midnight")
+                game_textures = Texturer("midnight")
         if button_rainbow.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_rainbow)
-            SCREEN.blit(dinoThemeRainbow, (205, 270))
+            SCREEN.blit(dinoThemeRainbow, (275, 285))
             if rainbowThemeUnlocked == False:
                 SCREEN.blit(themeLockHover, (268, 272))
-                draw_text_topleft("9999", price_font, (218, 165, 32), SCREEN, 288, 362)
-            if click and rainbowThemeUnlocked == True:
+                draw_text_topleft(rainbowThemePrice, price_font, (218, 165, 32), SCREEN, 288, 362)
+            if click and rainbowThemeUnlocked:
                 selectedTheme = "rainbow theme"
-                pass
-            else:
-                # unlock rainbow theme
-                pass
+                game_textures = Texturer("rainbow")
+            elif click and not rainbowThemeUnlocked:
+                unlock_texture("rainbow")
+                game_textures = Texturer("rainbow")
+        if button_mario.collidepoint((mx, my)):
+            pygame.draw.rect(SCREEN, button_color, button_mario)
+            SCREEN.blit(dinoMario, (60, 400))
+            if marioThemeUnlocked == False:
+                SCREEN.blit(themeLockHover, (48, 382))
+                draw_text_topleft(marioThemePrice, price_font, (218, 165, 32), SCREEN, 68, 472)
+            if click and marioThemeUnlocked:
+                selectedTheme = "Mario theme"
+                game_textures = Texturer("mario")
+            elif click and not marioThemeUnlocked:
+                unlock_texture("mario")
+                game_textures = Texturer("mario")
+        if button_luigi.collidepoint((mx, my)):
+            pygame.draw.rect(SCREEN, button_color, button_luigi)
+            SCREEN.blit(dinoLuigi, (170, 400))
+            if luigiThemeUnlocked == False:
+                SCREEN.blit(themeLockHover, (158, 382))
+                draw_text_topleft(luigiThemePrice, price_font, (218, 165, 32), SCREEN, 178, 472)
+            if click and luigiThemeUnlocked:
+                selectedTheme = "Luigi theme"
+                game_textures = Texturer("luigi")
+            elif click and not luigiThemeUnlocked:
+                unlock_texture("luigi")
+                game_textures = Texturer("luigi")
+        if button_toad.collidepoint((mx, my)):
+            pygame.draw.rect(SCREEN, button_color, button_toad)
+            SCREEN.blit(dinoToad, (280, 400))
+            if toadThemeUnlocked == False:
+                SCREEN.blit(themeLockHover, (268, 382))
+                draw_text_topleft(toadThemePrice, price_font, (218, 165, 32), SCREEN, 288, 472)
+            if click and toadThemeUnlocked:
+                selectedTheme = "Toad theme"
+                game_textures = Texturer("toad")
+            elif click and not toadThemeUnlocked:
+                unlock_texture("toad")
+                game_textures = Texturer("toad")
         if button_back.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_back)
             draw_text_topleft("Back", button_font, (50, 50, 50), SCREEN, 60, 510)
@@ -533,46 +604,6 @@ def deathMenu():
         clock.tick(60)
 
 
-# difficulty
-def set_modifier(selection_input):
-    global DIFFICULTY_SELECTOR, POINT_SPEED_MODIFIER, POINT_GAIN_MODIFIER, GAME_SPEED_MODIFIER
-
-    if selection_input == 1:  # easy difficulty?
-        DIFFICULTY_SELECTOR = 1
-        POINT_SPEED_MODIFIER = 400
-        POINT_GAIN_MODIFIER = 5
-        GAME_SPEED_MODIFIER = 0.4
-    elif selection_input == 2:  # medium mode
-        DIFFICULTY_SELECTOR = 2
-        POINT_SPEED_MODIFIER = 200
-        POINT_GAIN_MODIFIER = 3
-        GAME_SPEED_MODIFIER = 0.8
-    elif selection_input == 3:  # hardmode
-        DIFFICULTY_SELECTOR = 3
-        POINT_SPEED_MODIFIER = 100
-        POINT_GAIN_MODIFIER = 1
-        GAME_SPEED_MODIFIER = 0.8
-
-
-# set different textures as texture file
-def set_textures(filename):  # simple function to change the textures the game uses, still needs updating
-    global game_textures
-    game_textures = Texturer(filename)
-
-
-def check_textures():  # function to check if a texture is unlocked or not
-    data_file = open('data.json', 'r+')
-
-    json_data = json.load(data_file)
-    texture_data = json_data['textures']
-
-    total_textures = len(texture_data)
-    for i in range(0, total_textures):
-        texture = texture_data[i]
-
-    pass
-
-
 # coin system functions
 def save_coins(gained_coins):  # saves hard-earned coins
     data_file = open('data.json', 'r+')
@@ -613,7 +644,8 @@ def get_coins():
     return coins
 
 
-def buy_texture(bought_item):  # unlocks unlocked textures
+# texture system functions
+def unlock_texture(theme_name):  # unlocks locked textures
     global texture_file, game_textures, coin_cache
 
     data_file = open('data.json', 'r+')
@@ -630,7 +662,7 @@ def buy_texture(bought_item):  # unlocks unlocked textures
         texture_unlocked = texture['texture_unlocked']
         texture_price = texture['texture_price']
 
-        if bought_item == texture_name:
+        if theme_name == texture_name:
 
             if not texture_unlocked:
 
@@ -651,7 +683,54 @@ def buy_texture(bought_item):  # unlocks unlocked textures
     data_file.close()
 
 
-def reset_coins():
+def check_textures(theme_name):  # checks if a given texture is unlocked
+    data_file = open('data.json', 'r+')
+
+    json_data = json.load(data_file)
+    texture_data = json_data['textures']
+
+    data_file.close()
+
+    total_textures = len(texture_data)
+    for i in range(0, total_textures):
+
+        texture = texture_data[i]
+        texture_name = texture['texture_name']
+        texture_unlocked = texture['texture_unlocked']
+        texture_price = texture['texture_price']
+
+        if texture_name == theme_name:
+            texture_price = str(texture_price)
+            return texture_unlocked, texture_price
+
+
+def set_textures(filename):  # sets correct textures
+    global game_textures
+    game_textures = Texturer(filename)
+
+
+def reset_textures():  # resets the unlocked property of all textures to false
+    data_file = open('data.json', 'r+')
+
+    json_data = json.load(data_file)
+    texture_data = json_data['textures']
+
+    total_textures = len(texture_data)
+    for i in range(0, total_textures):
+        texture = texture_data[i]
+        if texture['texture_unlocked']:
+            texture['texture_unlocked'] = False
+            texture_data[i] = texture
+            json_data['textures'] = texture_data
+
+    data_file.seek(0)
+    data_file.truncate()
+
+    json.dump(json_data, data_file, indent=2)
+    data_file.close()
+
+
+def reset_coins(): # resets the amount of coins to 0
     data_file = open('data.json', 'r+')
     json_data = json.load(data_file)
     coin_data = json_data['currency']
@@ -662,4 +741,6 @@ def reset_coins():
     json.dump(json_data, data_file, indent=2)
     data_file.close()
 
-mainMenu()
+# mainMenu()
+difficultyMenu()
+# reset_textures()
