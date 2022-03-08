@@ -125,6 +125,7 @@ def mainLoop():  # the loop that plays the game
             if player.dino_rect.colliderect(obstacle.rect):
                 obstacles.pop()
                 pygame.time.delay(250)
+                print(coin_cache)
                 save_coins(coin_cache)
                 coin_cache = 0
                 death_count += 1
@@ -451,7 +452,7 @@ def textureMenu():
 
             if click:
                 selectedTheme = "Default theme"
-
+                game_textures = Texturer("base_game")
                 pass
         if button_blue.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_blue)
@@ -741,6 +742,6 @@ def reset_coins(): # resets the amount of coins to 0
     json.dump(json_data, data_file, indent=2)
     data_file.close()
 
-# mainMenu()
-difficultyMenu()
+mainMenu()
+# difficultyMenu()
 # reset_textures()
