@@ -1,6 +1,6 @@
 import pygame
 
-# creates and handles the dino object
+# creates and handles the Dino object
 class Dino:
     X_POS = 80
     Y_POS = 310
