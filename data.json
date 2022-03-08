@@ -1,22 +1,47 @@
 {
   "currency": {
-    "coins": 215
+    "coins": 91343
   },
   "textures": [
     {
-      "texture_name": "base_game",
+      "texture_name": "blue",
       "texture_unlocked": true,
-      "texture_price": 69
+      "texture_price": 20
     },
     {
-      "texture_name": "test1",
+      "texture_name": "green",
       "texture_unlocked": false,
-      "texture_price": 100
+      "texture_price": 20
     },
     {
-      "texture_name": "test2",
+      "texture_name": "luigi",
+      "texture_unlocked": true,
+      "texture_price": 600
+    },
+    {
+      "texture_name": "mario",
+      "texture_unlocked": true,
+      "texture_price": 500
+    },
+    {
+      "texture_name": "midnight",
+      "texture_unlocked": true,
+      "texture_price": 30
+    },
+    {
+      "texture_name": "rainbow",
       "texture_unlocked": false,
-      "texture_price": 100
+      "texture_price": 200
+    },
+    {
+      "texture_name": "red",
+      "texture_unlocked": false,
+      "texture_price": 20
+    },
+    {
+      "texture_name": "toad",
+      "texture_unlocked": true,
+      "texture_price": 650
     }
   ]
 }

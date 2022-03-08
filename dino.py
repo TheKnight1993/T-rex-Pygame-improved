@@ -1,8 +1,5 @@
 import pygame
 
-
-
-
 jumpFrame = False
 # creates and handles the dino object
 class Dino:
