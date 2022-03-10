@@ -38,7 +38,7 @@ clock = pygame.time.Clock()
 texture_file = 'base_game'
 game_textures = Texturer(texture_file)
 
-
+powerupFrame = False
 invisFrame = False
 selectedDifficulty = "Medium"
 selectedTheme = "Default theme"
@@ -72,7 +72,7 @@ def draw_text(text, font, color, surface, x, y):
 
 def mainLoop():  # the loop that plays the game
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, coin_cache
-    global livesAmount, invisFrame
+    global livesAmount, invisFrame, powerupFrame
     global JUMPAMOUNT, livesAmount
     global jumpPowerupActivated, shieldPowerupActivated, scorePowerupActivated, powerupActivated, jumpPowerupStartTime
     global POINT_GAIN_MODIFIER, finalPoints
@@ -144,15 +144,17 @@ def mainLoop():  # the loop that plays the game
             obstacle.draw(SCREEN)
             obstacle.update(game_speed, obstacles)
 
-            if player.dino_rect.colliderect(obstacle.rect) and powerupActivated == True:
-                obstacle.pop()
+            if player.dino_rect.colliderect(obstacle.rect) and powerupActivated and not powerupFrame:
                 randomPowerup = random.randint(0, 2)
+                powerupFrame = True
                 if randomPowerup == 0:
                     shieldPowerupActivated = True
                 if randomPowerup == 1:
                     jumpPowerupActivated = True
                 if randomPowerup == 2:
                     scorePowerupActivated = True
+            if not player.dino_rect.colliderect(obstacle.rect) and powerupFrame:
+                powerupFrame = False
 
             if shieldPowerupActivated:
                 player.livesAmount += 1
@@ -168,7 +170,7 @@ def mainLoop():  # the loop that plays the game
             if scorePowerupActivated:
                 pass
             # TODO: fix this bro
-            if player.dino_rect.colliderect(obstacle.rect) and invisFrame == False:
+            if player.dino_rect.colliderect(obstacle.rect) and invisFrame == False and not powerupActivated:
                 player.livesAmount -= 1
                 invisFrame = True
             if not player.dino_rect.colliderect(obstacle.rect) and invisFrame == True:
