@@ -53,4 +53,4 @@ class Powerup(Obstacle):
         self.rect.y = 250
 
     def draw(self, SCREEN):
-        SCREEN.blit(self.image, self.rect)
+        SCREEN.blit(self.image[0], self.rect)

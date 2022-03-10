@@ -45,4 +45,5 @@ class Texturer:
 
         self.CLOUD = pygame.image.load('Assets/base_game/Other/Cloud.png')
         self.BG = pygame.image.load('Assets/base_game/Other/Track.png')
+        self.POWERUP = [pygame.image.load('Assets/images/powerup.png')]
 

@@ -1,6 +1,6 @@
 {
   "currency": {
-    "coins": 91343
+    "coins": 91146
   },
   "textures": [
     {
@@ -10,7 +10,7 @@
     },
     {
       "texture_name": "green",
-      "texture_unlocked": false,
+      "texture_unlocked": true,
       "texture_price": 20
     },
     {
@@ -30,12 +30,12 @@
     },
     {
       "texture_name": "rainbow",
-      "texture_unlocked": false,
+      "texture_unlocked": true,
       "texture_price": 200
     },
     {
       "texture_name": "red",
-      "texture_unlocked": false,
+      "texture_unlocked": true,
       "texture_price": 20
     },
     {

@@ -125,15 +125,16 @@ def mainLoop():  # the loop that plays the game
         player.update(user_input)
 
         if len(obstacles) == 0:
-            randomChoice = ranodm.randint(0, 100)
-            if randomChoice <= 32:
+            randomChoice = random.randint(0, 100)
+            if randomChoice <= 1:
                 obstacles.append(SmallCactus(game_textures.SMALL_CACTI, SCREEN_WIDTH))
-            elif randomChoice <= 64:
+            elif randomChoice <= 2:
                 obstacles.append(LargeCactus(game_textures.LARGE_CACTI, SCREEN_WIDTH))
-            elif randomChoice <= 96:
+            elif randomChoice <= 3:
                 obstacles.append(Bird(game_textures.BIRD, SCREEN_WIDTH))
             elif randomChoice <= 100:
-                obstacles.append(Powerup())
+                obstacles.append(Powerup(game_textures.POWERUP, SCREEN_WIDTH))
+                powerupActivated = True
 
 
         for obstacle in obstacles:
