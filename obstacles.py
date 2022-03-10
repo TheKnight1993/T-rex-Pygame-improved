@@ -46,6 +46,7 @@ class Bird(Obstacle):
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
 
+
 class Powerup(Obstacle):
     def __init__(self, image, screen_width):
         self.type = 0

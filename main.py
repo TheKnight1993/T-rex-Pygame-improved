@@ -37,6 +37,7 @@ clock = pygame.time.Clock()
 # texture file variables
 texture_file = 'base_game'
 game_textures = Texturer(texture_file)
+powerup = Powerup(game_textures.POWERUP, SCREEN_WIDTH)
 
 
 invisFrame = False
@@ -75,7 +76,7 @@ def mainLoop():  # the loop that plays the game
     global livesAmount, invisFrame
     global JUMPAMOUNT, livesAmount
     global jumpPowerupActivated, shieldPowerupActivated, scorePowerupActivated, powerupActivated, jumpPowerupStartTime
-    global POINT_GAIN_MODIFIER, finalPoints
+    global POINT_GAIN_MODIFIER, finalPoints, powerup
     run = True
     player = Dino(game_textures)
     cloud = Cloud(SCREEN_WIDTH, game_speed, game_textures)
@@ -136,7 +137,7 @@ def mainLoop():  # the loop that plays the game
                 obstacles.append(Bird(game_textures.BIRD, SCREEN_WIDTH))
                 powerupActivated = False
             elif randomChoice <= 100:
-                obstacles.append(Powerup(game_textures.POWERUP, SCREEN_WIDTH))
+                obstacles.append(powerup)
                 powerupActivated = True
 
 
@@ -145,7 +146,7 @@ def mainLoop():  # the loop that plays the game
             obstacle.update(game_speed, obstacles)
 
             if player.dino_rect.colliderect(obstacle.rect) and powerupActivated == True:
-                obstacle.pop()
+                powerup.rect.y = 100000
                 randomPowerup = random.randint(0, 2)
                 if randomPowerup == 0:
                     shieldPowerupActivated = True
