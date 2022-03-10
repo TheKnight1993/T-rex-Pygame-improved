@@ -169,24 +169,23 @@ def mainLoop():  # the loop that plays the game
                     scorePowerupActivated = True
             if not player.dino_rect.colliderect(obstacle.rect) and powerupFrame:
                 powerupFrame = False
-
             if shieldPowerupActivated:
                 player.livesAmount += 1
                 shieldPowerupActivated = False
             if jumpPowerupActivated:
                 player.JUMPAMOUNT += 1
+                player.jumpAmount = player.JUMPAMOUNT
                 jumpPowerupActivated = False
                 player.jumpPowerup = True
                 jumpPowerupStartTime = pygame.time.get_ticks()
             if player.jumpPowerup:
                 draw_text_topleft("double jump activated", font, (0, 0, 0), SCREEN, 20, 50)
-            if (pygame.time.get_ticks() - jumpPowerupStartTime) > 10000:
+            if (pygame.time.get_ticks() - jumpPowerupStartTime) > 15000 and player.running:
                 player.JUMPAMOUNT -= 1
                 player.jumpPowerup = False
             if scorePowerupActivated:
                 points += 50 * int(game_speed)
                 scorePowerupActivated = False
-            # TODO: fix this bro
             if player.dino_rect.colliderect(obstacle.rect) and invisFrame == False and not powerupActivated:
                 player.livesAmount -= 1
                 invisFrame = True
@@ -194,12 +193,19 @@ def mainLoop():  # the loop that plays the game
                 invisFrame = False
             if player.livesAmount < 1:
                 obstacles.pop()
+                powerupFrame = False
+                invisFrame = False
+                jumpPowerupActivated = False
+                shieldPowerupActivated = False
+                scorePowerupActivated = False
+                powerupActivated = False
+                jumpPowerupStartTime = 0
+                player.JUMPAMOUNT = 1
                 pygame.time.delay(250)
                 save_coins(coin_cache)
                 print(coin_cache)
                 coin_cache = 0
                 death_count += 1
-                player.jumpAmount = 1
                 finalPoints = points
                 points = 0
                 ghost_points = 0
