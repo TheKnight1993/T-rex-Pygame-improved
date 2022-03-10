@@ -9,13 +9,14 @@ pygame.init()
 # constants and preset variables
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
-POINT_SPEED_MODIFIER = 100  # takes a numeric value, higher values speed up the game less
-POINT_GAIN_MODIFIER = 1  # takes a numeric value, higher values give less points
+POINT_SPEED_MODIFIER = 200  # takes a numeric value, higher values speed up the game less
+POINT_GAIN_MODIFIER = 3  # takes a numeric value, higher values give less points
 GAME_SPEED_MODIFIER = 0.8  # takes a numeric value, higher values give a more difficult game
 points = 0
 finalPoints = 0
 ghost_points = 0
 coin_cache = 0
+points_coin_cache = 0
 game_speed = 10
 x_pos_bg = 0
 y_pos_bg = 380
@@ -82,17 +83,19 @@ def mainLoop():  # the loop that plays the game
 
     def score():
         global points, game_speed, POINT_SPEED_MODIFIER, POINT_GAIN_MODIFIER, GAME_SPEED_MODIFIER, ghost_points
-        global coin_cache
+        global coin_cache, points_coin_cache
 
         ghost_points += 1
         if ghost_points == POINT_GAIN_MODIFIER and ghost_points != 0:
             ghost_points -= POINT_GAIN_MODIFIER
             points += 1
+            points_coin_cache += 1
         if points >= 100 and points % POINT_SPEED_MODIFIER == 0 and ghost_points == 0:
             game_speed += GAME_SPEED_MODIFIER
-            print(game_speed)
-        if points % 100 == 0:
+        if points_coin_cache == 100:
             coin_cache += 1
+            print(coin_cache)
+            points_coin_cache = 0
 
         draw_text_topright(('Points :' + str(points)), font, (0, 0, 0), SCREEN, 1000, 40)
 
@@ -154,8 +157,8 @@ def mainLoop():  # the loop that plays the game
                 player.JUMPAMOUNT -= 1
                 player.jumpPowerup = False
             if scorePowerupActivated:
-                scorePowerupActivated = False
-                POINT_GAIN_MODIFIER = POINT_GAIN_MODIFIER * 0.5
+                pass
+            # TODO: fix this bro
             if player.dino_rect.colliderect(obstacle.rect) and invisFrame == False:
                 player.livesAmount -= 1
                 invisFrame = True
@@ -165,6 +168,7 @@ def mainLoop():  # the loop that plays the game
                 obstacles.pop()
                 pygame.time.delay(250)
                 save_coins(coin_cache)
+                print(coin_cache)
                 coin_cache = 0
                 death_count += 1
                 player.jumpAmount = 1
@@ -377,7 +381,7 @@ def difficultyMenu():
             if click:
                 selectedDifficulty = "Hard"
                 POINT_SPEED_MODIFIER = 100
-                POINT_GAIN_MODIFIER = 1
+                POINT_GAIN_MODIFIER = 2
                 GAME_SPEED_MODIFIER = 0.8
         if button_back.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_back)
@@ -510,8 +514,7 @@ def textureMenu():
 
             if click:
                 selectedTheme = "Default theme"
-
-                pass
+                game_textures = Texturer("base_game")
         if button_blue.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_blue)
             SCREEN.blit(dinoThemeBlue, (165, 175))
@@ -805,6 +808,6 @@ def reset_coins(): # resets the amount of coins to 0
     json.dump(json_data, data_file, indent=2)
     data_file.close()
 
-# mainMenu()
-difficultyMenu()
+mainMenu()
+# difficultyMenu()
 # reset_textures()
