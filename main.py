@@ -136,15 +136,15 @@ def mainLoop():  # the loop that plays the game
         player.update(user_input)
 
         if len(obstacles) == 0:
-            randomChoice = random.randint(0, 100)
+            randomChoice = random.randint(1, 100)
             powerup.rect.y = 250
-            if randomChoice <= 1:
+            if randomChoice <= 32:
                 obstacles.append(SmallCactus(game_textures.SMALL_CACTI, SCREEN_WIDTH))
                 powerupActivated = False
-            elif randomChoice <= 2:
+            elif randomChoice <= 64:
                 obstacles.append(LargeCactus(game_textures.LARGE_CACTI, SCREEN_WIDTH))
                 powerupActivated = False
-            elif randomChoice <= 3:
+            elif randomChoice <= 96:
                 obstacles.append(Bird(game_textures.BIRD, SCREEN_WIDTH))
                 powerupActivated = False
             elif randomChoice <= 100:
@@ -180,6 +180,7 @@ def mainLoop():  # the loop that plays the game
                 draw_text_topleft("double jump activated", font, (0, 0, 0), SCREEN, 20, 50)
             if (pygame.time.get_ticks() - jumpPowerupStartTime) > 15000 and player.running:
                 player.JUMPAMOUNT -= 1
+                player.jumpAmount -= 1
                 player.jumpPowerup = False
             if scorePowerupActivated:
                 points += 50 * int(game_speed)
