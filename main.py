@@ -190,26 +190,6 @@ def mainLoop():  # the loop that plays the game
         pygame.display.update()
 
 
-def pauseMenu():  # right now a barebones copy of what is in what.py
-    run = True
-    while run:
-        SCREEN.fill((200, 200, 200))
-        text = font.render('Press Any Key To Resume', True, (0, 0, 0))
-        text_rect = text.get_rect()
-        text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 20)
-        SCREEN.blit(text, text_rect)
-        pygame.display.update()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                exit()
-            if event.type == pygame.KEYDOWN:
-                mainLoop()
-
-        clock.tick(60)
-        pygame.display.update()
-
-
 def mainMenu():  # has to become the true main menu, that goes to all the otehr loops
     run = True
     click = False
