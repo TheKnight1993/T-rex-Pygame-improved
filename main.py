@@ -128,10 +128,13 @@ def mainLoop():  # the loop that plays the game
             randomChoice = random.randint(0, 100)
             if randomChoice <= 1:
                 obstacles.append(SmallCactus(game_textures.SMALL_CACTI, SCREEN_WIDTH))
+                powerupActivated = False
             elif randomChoice <= 2:
                 obstacles.append(LargeCactus(game_textures.LARGE_CACTI, SCREEN_WIDTH))
+                powerupActivated = False
             elif randomChoice <= 3:
                 obstacles.append(Bird(game_textures.BIRD, SCREEN_WIDTH))
+                powerupActivated = False
             elif randomChoice <= 100:
                 obstacles.append(Powerup(game_textures.POWERUP, SCREEN_WIDTH))
                 powerupActivated = True
@@ -141,7 +144,8 @@ def mainLoop():  # the loop that plays the game
             obstacle.draw(SCREEN)
             obstacle.update(game_speed, obstacles)
 
-            if powerupActivated == True:
+            if player.dino_rect.colliderect(obstacle.rect) and powerupActivated == True:
+                obstacle.pop()
                 randomPowerup = random.randint(0, 2)
                 if randomPowerup == 0:
                     shieldPowerupActivated = True
@@ -202,7 +206,6 @@ def mainMenu():  # has to become the true main menu, that goes to all the otehr 
 
         SCREEN.fill((0, 0, 0))
         SCREEN.blit(background_image, (0, 0))
-        # title_font = pygame.font.Font('Assets/font/PressStart2P-Regular.ttf', 20)
         draw_text_topleft("The T-Rex Runner Game", title_font, (50, 50, 50), SCREEN, 100, 50)
         draw_text_topleft("Main menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
 
