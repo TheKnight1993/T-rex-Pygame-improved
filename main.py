@@ -81,7 +81,6 @@ def mainLoop():  # the loop that plays the game
     player = Dino(game_textures)
     cloud = Cloud(SCREEN_WIDTH, game_speed, game_textures)
     death_count = 0
-
     def score():
         global points, game_speed, POINT_SPEED_MODIFIER, POINT_GAIN_MODIFIER, GAME_SPEED_MODIFIER, ghost_points
         global coin_cache, points_coin_cache
@@ -156,7 +155,6 @@ def mainLoop():  # the loop that plays the game
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
             obstacle.update(game_speed, obstacles)
-
             if player.dino_rect.colliderect(obstacle.rect) and powerupActivated == True:
                 powerup.rect.y = 100000
                 randomPowerup = random.randint(1, 1)
@@ -174,7 +172,7 @@ def mainLoop():  # the loop that plays the game
                 shieldPowerupActivated = False
             if jumpPowerupActivated:
                 player.JUMPAMOUNT += 1
-                player.jumpAmount = player.JUMPAMOUNT
+                player.jumpAmount += 1
                 jumpPowerupActivated = False
                 player.jumpPowerup = True
                 jumpPowerupStartTime = pygame.time.get_ticks()
