@@ -45,7 +45,7 @@ selectedDifficulty = "Medium"
 selectedTheme = "Default theme"
 jumpPowerupActivated = False
 shieldPowerupActivated = False
-scorePowerupActivated = True
+scorePowerupActivated = False
 powerupActivated = False
 jumpPowerupStartTime = 0
 
@@ -100,6 +100,17 @@ def mainLoop():  # the loop that plays the game
 
         draw_text_topright(('Points :' + str(points)), font, (0, 0, 0), SCREEN, 1000, 40)
 
+        HEART = pygame.image.load('Assets/images/heart.png')
+        heart = pygame.transform.scale(HEART, (30, 30))
+        if player.livesAmount > 0 and player.livesAmount < 4:
+            SCREEN.blit(heart, (20, 20))
+        if player.livesAmount > 1 and player.livesAmount < 4:
+            SCREEN.blit(heart, (50, 20))
+        if player.livesAmount > 2 and player.livesAmount < 4:
+            SCREEN.blit(heart, (80, 20))
+        if player.livesAmount > 3:
+            draw_text_topleft("your lives: " + str(player.livesAmount), font, (0, 0, 0), SCREEN, 20, 30)
+
     def background():
         global x_pos_bg, y_pos_bg
         image_width = game_textures.BG.get_width()
@@ -127,6 +138,7 @@ def mainLoop():  # the loop that plays the game
 
         if len(obstacles) == 0:
             randomChoice = random.randint(0, 100)
+            powerup.rect.y = 250
             if randomChoice <= 1:
                 obstacles.append(SmallCactus(game_textures.SMALL_CACTI, SCREEN_WIDTH))
                 powerupActivated = False
@@ -147,7 +159,7 @@ def mainLoop():  # the loop that plays the game
 
             if player.dino_rect.colliderect(obstacle.rect) and powerupActivated == True:
                 powerup.rect.y = 100000
-                randomPowerup = random.randint(0, 2)
+                randomPowerup = random.randint(1, 1)
                 powerupFrame = True
                 if randomPowerup == 0:
                     shieldPowerupActivated = True
@@ -166,11 +178,14 @@ def mainLoop():  # the loop that plays the game
                 jumpPowerupActivated = False
                 player.jumpPowerup = True
                 jumpPowerupStartTime = pygame.time.get_ticks()
-            if (pygame.time.get_ticks() - jumpPowerupStartTime) > 20000:
+            if player.jumpPowerup:
+                draw_text_topleft("double jump activated", font, (0, 0, 0), SCREEN, 20, 50)
+            if (pygame.time.get_ticks() - jumpPowerupStartTime) > 10000:
                 player.JUMPAMOUNT -= 1
                 player.jumpPowerup = False
             if scorePowerupActivated:
-                pass
+                points += 50 * int(game_speed)
+                scorePowerupActivated = False
             # TODO: fix this bro
             if player.dino_rect.colliderect(obstacle.rect) and invisFrame == False and not powerupActivated:
                 player.livesAmount -= 1
