@@ -839,5 +839,3 @@ def reset_coins():  # resets the amount of coins to 0
 
 
 mainMenu()
-# difficultyMenu()
-# reset_textures()

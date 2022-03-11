@@ -1,47 +1,48 @@
 {
   "currency": {
-    "coins": 90065
+    "coins": 0
   },
   "textures": [
     {
       "texture_name": "blue",
-      "texture_unlocked": true,
+      "texture_unlocked": false,
       "texture_price": 50
     },
     {
       "texture_name": "green",
-      "texture_unlocked": true,
+      "texture_unlocked": false,
       "texture_price": 250
     },
     {
       "texture_name": "luigi",
-      "texture_unlocked": true,
+      "texture_unlocked": false,
       "texture_price": 5000
     },
     {
       "texture_name": "mario",
-      "texture_unlocked": true,
+      "texture_unlocked": false,
       "texture_price": 2500
     },
     {
       "texture_name": "midnight",
-      "texture_unlocked": true,
+      "texture_unlocked": false,
       "texture_price": 500
     },
     {
       "texture_name": "rainbow",
-      "texture_unlocked": true,
+      "texture_unlocked": false,
       "texture_price": 1000
     },
     {
       "texture_name": "red",
-      "texture_unlocked": true,
+      "texture_unlocked": false,
       "texture_price": 100
     },
     {
       "texture_name": "toad",
-      "texture_unlocked": true,
+      "texture_unlocked": false,
       "texture_price": 9999
     }
-  ]
+  ],
+  "highscore": 0
 }

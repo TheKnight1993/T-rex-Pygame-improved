@@ -1,12 +1,16 @@
 import pygame
 
 jumpFrame = False
+startTime = 0
+
+
 # creates and handles the dino object
 class Dino:
     X_POS = 80
     Y_POS = 310
     Y_POS_DUCK = 340
     JUMP_VEL = 8.5
+
     def __init__(self, textures):
         self.running, self.ducking, self.jumping = True, False, False
 
@@ -24,8 +28,9 @@ class Dino:
         self.jumpAmount = self.JUMPAMOUNT
         self.livesAmount = 1
         self.jumpPowerup = False
+
     def update(self, userInput):
-        global jumpAmount, jumpFrame, startTime
+        global jumpFrame, startTime
         if self.running:
             self.run()
         if self.ducking:
@@ -36,11 +41,10 @@ class Dino:
         if self.step_index >= 10:
             self.step_index = 0
 
-        if jumpFrame == True:
+        if jumpFrame:  # makes sure you can't instantly double jump
             if (pygame.time.get_ticks() - startTime) > 250:
                 jumpFrame = False
-        if (userInput[pygame.K_w] or userInput[pygame.K_UP] or userInput[pygame.K_SPACE]) and jumpFrame == False:
-            print(self.jumpAmount)
+        if (userInput[pygame.K_w] or userInput[pygame.K_UP] or userInput[pygame.K_SPACE]) and not jumpFrame:
             jumpFrame = True
             startTime = pygame.time.get_ticks()
             self.running = False
@@ -49,11 +53,11 @@ class Dino:
             if self.jumpAmount > 0:
                 self.jump_vel = self.JUMP_VEL
                 self.jumpAmount -= 1
-        elif (userInput[pygame.K_s] or userInput[pygame.K_DOWN] or userInput[pygame.KMOD_LSHIFT]) and not self.jumping:
+        elif (userInput[pygame.K_s] or userInput[pygame.K_DOWN]) and not self.jumping:
             self.running = False
             self.ducking = True
             self.jumping = False
-        elif not (self.jumping or (userInput[pygame.K_s] or userInput[pygame.K_DOWN] or userInput[pygame.KMOD_SHIFT])):
+        elif not (self.jumping or (userInput[pygame.K_s] or userInput[pygame.K_DOWN])):
             self.running = True
             self.ducking = False
             self.jumping = False
@@ -73,7 +77,6 @@ class Dino:
         self.step_index += 1
 
     def jump(self):
-        global jumpAmount, JUMPAMOUNT
         self.image = self.jump_img
         if self.jumping:
             self.dino_rect.y -= self.jump_vel * 2
@@ -84,6 +87,6 @@ class Dino:
             self.jumping = False
             self.jump_vel = self.JUMP_VEL
             self.jumpAmount = self.JUMPAMOUNT
+
     def draw(self, SCREEN):
-        # print(self.dino_rect)
         SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))

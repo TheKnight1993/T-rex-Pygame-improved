@@ -2,7 +2,7 @@ import random
 
 
 # handling functions for the obstacle objects
-class Obstacle:
+class Obstacle:  # parent class for all obstacles
     def __init__(self, image, type, screen_width):
         self.image = image
         self.type = type
@@ -19,21 +19,21 @@ class Obstacle:
 
 
 # creates the different obstacle objects
-class SmallCactus(Obstacle):
+class SmallCactus(Obstacle):  # small cactus class
     def __init__(self, image, screen_width):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type, screen_width)
         self.rect.y = 325
 
 
-class LargeCactus(Obstacle):
+class LargeCactus(Obstacle):  # large cactus class
     def __init__(self, image, screen_width):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type, screen_width)
         self.rect.y = 300
 
 
-class Bird(Obstacle):
+class Bird(Obstacle):  # bird class
     def __init__(self, image, screen_width):
         self.type = 0
         super().__init__(image, self.type, screen_width)
@@ -47,7 +47,7 @@ class Bird(Obstacle):
         self.index += 1
 
 
-class Powerup(Obstacle):
+class Powerup(Obstacle): # powerup class
     def __init__(self, image, screen_width):
         self.type = 0
         super().__init__(image, self.type, screen_width)
