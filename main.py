@@ -53,6 +53,7 @@ showPointText = False
 showLifeText = False
 
 
+
 def draw_text_topleft(text, font, color, surface, x, y):
     textobj = font.render(text, True, color)
     text_rect = textobj.get_rect()
@@ -507,7 +508,6 @@ def textureMenu():
         marioThemeUnlocked, marioThemePrice = check_textures("mario")
         luigiThemeUnlocked, luigiThemePrice = check_textures("luigi")
         toadThemeUnlocked, toadThemePrice = check_textures("toad")
-
         if not blueThemeUnlocked:
             SCREEN.blit(themeLock, (147, 162))
         if not redThemeUnlocked:
@@ -543,7 +543,7 @@ def textureMenu():
                 game_textures = Texturer("blue")
             elif click and not blueThemeUnlocked:
                 unlock_texture("blue")
-                game_textures = Texturer("blue")
+
         if button_red.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_red)
             SCREEN.blit(dinoThemeRed, (275, 175))
@@ -555,7 +555,6 @@ def textureMenu():
                 game_textures = Texturer("red")
             elif click and not redThemeUnlocked:
                 unlock_texture("red")
-                game_textures = Texturer("red")
         if button_green.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_green)
             SCREEN.blit(dinoThemeGreen, (55, 285))
@@ -567,7 +566,6 @@ def textureMenu():
                 game_textures = Texturer("green")
             elif click and not greenThemeUnlocked:
                 unlock_texture("green")
-                game_textures = Texturer("green")
         if button_midnight_blue.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_midnight_blue)
             SCREEN.blit(dinoThemeMNBlue, (165, 285))
@@ -579,7 +577,6 @@ def textureMenu():
                 game_textures = Texturer("midnight")
             elif click and not mnblueThemeUnlocked:
                 unlock_texture("midnight")
-                game_textures = Texturer("midnight")
         if button_rainbow.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_rainbow)
             SCREEN.blit(dinoThemeRainbow, (275, 285))
@@ -591,7 +588,6 @@ def textureMenu():
                 game_textures = Texturer("rainbow")
             elif click and not rainbowThemeUnlocked:
                 unlock_texture("rainbow")
-                game_textures = Texturer("rainbow")
         if button_mario.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_mario)
             SCREEN.blit(dinoMario, (60, 400))
@@ -603,7 +599,6 @@ def textureMenu():
                 game_textures = Texturer("mario")
             elif click and not marioThemeUnlocked:
                 unlock_texture("mario")
-                game_textures = Texturer("mario")
         if button_luigi.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_luigi)
             SCREEN.blit(dinoLuigi, (170, 400))
@@ -615,7 +610,6 @@ def textureMenu():
                 game_textures = Texturer("luigi")
             elif click and not luigiThemeUnlocked:
                 unlock_texture("luigi")
-                game_textures = Texturer("luigi")
         if button_toad.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_toad)
             SCREEN.blit(dinoToad, (280, 400))
@@ -627,7 +621,6 @@ def textureMenu():
                 game_textures = Texturer("toad")
             elif click and not toadThemeUnlocked:
                 unlock_texture("toad")
-                game_textures = Texturer("toad")
         if button_back.collidepoint((mx, my)):
             pygame.draw.rect(SCREEN, button_color, button_back)
             draw_text_topleft("Back", button_font, (50, 50, 50), SCREEN, 60, 510)
@@ -751,7 +744,6 @@ def unlock_texture(theme_name):  # unlocks locked textures
                 if coins >= texture_price:
                     texture_unlocked = True
                     coins = spend_coins(texture_price, json_data)
-                    print(coins)
                     texture['texture_unlocked'] = texture_unlocked
                     texture_data[i] = texture
                     json_data['textures'] = texture_data
