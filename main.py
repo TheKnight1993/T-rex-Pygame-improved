@@ -48,6 +48,9 @@ shieldPowerupActivated = False
 scorePowerupActivated = False
 powerupActivated = False
 jumpPowerupStartTime = 0
+pointsPowerupStartTime = 0
+jumpTimer = False
+showPoints = False
 
 
 def draw_text_topleft(text, font, color, surface, x, y):
@@ -74,9 +77,9 @@ def draw_text(text, font, color, surface, x, y):
 def mainLoop():  # the loop that plays the game
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, coin_cache
     global livesAmount, invisFrame, powerupFrame
-    global JUMPAMOUNT, livesAmount
+    global JUMPAMOUNT, livesAmount, jumpTimer
     global jumpPowerupActivated, shieldPowerupActivated, scorePowerupActivated, powerupActivated, jumpPowerupStartTime
-    global POINT_GAIN_MODIFIER, finalPoints, powerup
+    global POINT_GAIN_MODIFIER, finalPoints, powerup, showPoints, pointsPowerupStartTime, scoreTimer
     run = True
     player = Dino(game_textures)
     cloud = Cloud(SCREEN_WIDTH, game_speed, game_textures)
@@ -94,7 +97,7 @@ def mainLoop():  # the loop that plays the game
             game_speed += GAME_SPEED_MODIFIER
         if points_coin_cache == 100:
             coin_cache += 1
-            print(coin_cache)
+            # print(coin_cache)
             points_coin_cache = 0
 
         draw_text_topright(('Points :' + str(points)), font, (0, 0, 0), SCREEN, 1000, 40)
@@ -144,7 +147,7 @@ def mainLoop():  # the loop that plays the game
             elif randomChoice <= 64:
                 obstacles.append(LargeCactus(game_textures.LARGE_CACTI, SCREEN_WIDTH))
                 powerupActivated = False
-            elif randomChoice <= 96:
+            elif randomChoice <= 64:
                 obstacles.append(Bird(game_textures.BIRD, SCREEN_WIDTH))
                 powerupActivated = False
             elif randomChoice <= 100:
@@ -157,7 +160,7 @@ def mainLoop():  # the loop that plays the game
             obstacle.update(game_speed, obstacles)
             if player.dino_rect.colliderect(obstacle.rect) and powerupActivated == True:
                 powerup.rect.y = 100000
-                randomPowerup = random.randint(1, 1)
+                randomPowerup = random.randint(2, 2)
                 powerupFrame = True
                 if randomPowerup == 0:
                     shieldPowerupActivated = True
@@ -176,15 +179,28 @@ def mainLoop():  # the loop that plays the game
                 jumpPowerupActivated = False
                 player.jumpPowerup = True
                 jumpPowerupStartTime = pygame.time.get_ticks()
+                jumpTimer = True
             if player.jumpPowerup:
                 draw_text_topleft("double jump activated", font, (0, 0, 0), SCREEN, 20, 50)
-            if (pygame.time.get_ticks() - jumpPowerupStartTime) > 15000 and player.running:
+            if (pygame.time.get_ticks() - jumpPowerupStartTime) > 15000 and player.running and jumpTimer:
                 player.JUMPAMOUNT -= 1
                 player.jumpAmount -= 1
                 player.jumpPowerup = False
+                jumpPowerupStartTime = 0
+                jumpTimer = False
             if scorePowerupActivated:
                 points += 50 * int(game_speed)
                 scorePowerupActivated = False
+                showPoints = True
+                pointsPowerupStartTime = pygame.time.get_ticks()
+            if (pygame.time.get_ticks() - pointsPowerupStartTime) > 2500 and showPoints:
+                showPoints = False
+
+            if True:
+                print(showPoints)
+            if showPoints:
+                draw_text_topleft("bonus points!", subtitle_font, (0, 0, 0), SCREEN, 400, 150)
+
             if player.dino_rect.colliderect(obstacle.rect) and invisFrame == False and not powerupActivated:
                 player.livesAmount -= 1
                 invisFrame = True

@@ -40,6 +40,7 @@ class Dino:
             if (pygame.time.get_ticks() - startTime) > 250:
                 jumpFrame = False
         if (userInput[pygame.K_w] or userInput[pygame.K_UP] or userInput[pygame.K_SPACE]) and jumpFrame == False:
+            print(self.jumpAmount)
             jumpFrame = True
             startTime = pygame.time.get_ticks()
             self.running = False
