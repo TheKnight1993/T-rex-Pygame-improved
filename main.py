@@ -49,7 +49,8 @@ powerupActivated = False
 jumpPowerupStartTime = 0
 pointsPowerupStartTime = 0
 jumpTimer = False
-showPoints = False
+showPointText = False
+showLifeText = False
 
 
 def draw_text_topleft(text, font, color, surface, x, y):
@@ -69,8 +70,8 @@ def draw_text_topright(text, font, color, surface, x, y):
 def mainLoop():  # the loop that plays the game
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, livesAmount, invisFrame, powerupFrame
     global jumpPowerupActivated, shieldPowerupActivated, scorePowerupActivated, powerupActivated, jumpPowerupStartTime
-    global POINT_GAIN_MODIFIER, finalPoints, powerup, showPoints, pointsPowerupStartTime, scoreTimer
-    global JUMPAMOUNT, livesAmount, jumpTimer
+    global POINT_GAIN_MODIFIER, finalPoints, powerup, showPointText, pointsPowerupStartTime, scoreTimer
+    global JUMPAMOUNT, livesAmount, jumpTimer, showLifeText
 
     run = True
     player = Dino(game_textures)
@@ -162,6 +163,13 @@ def mainLoop():  # the loop that plays the game
             if shieldPowerupActivated:  # adds a life as a 'shield'
                 player.livesAmount += 1
                 shieldPowerupActivated = False
+                showLifeText = True
+                pointsPowerupStartTime = pygame.time.get_ticks()
+            if (pygame.time.get_ticks() - pointsPowerupStartTime) > 2500 and showLifeText:
+                showLifeText = False
+            if showLifeText:  # notifies the player if the extra life powerup has been activated
+                draw_text_topleft("extra life!!", subtitle_font, (0, 0, 0), SCREEN, 400, 150)
+
             if jumpPowerupActivated:  # adds a jump for a double jump
                 player.JUMPAMOUNT += 1
                 player.jumpAmount += 1
@@ -181,12 +189,12 @@ def mainLoop():  # the loop that plays the game
             if scorePowerupActivated:  # gives the player an amount of points based on the game speed
                 points += 50 * int(game_speed)
                 scorePowerupActivated = False
-                showPoints = True
+                showPointText = True
                 pointsPowerupStartTime = pygame.time.get_ticks()
-            if (pygame.time.get_ticks() - pointsPowerupStartTime) > 2500 and showPoints:
-                showPoints = False
+            if (pygame.time.get_ticks() - pointsPowerupStartTime) > 2500 and showPointText:
+                showPointText = False
 
-            if showPoints:  # notifies the player if the bonus points powerup has been activated
+            if showPointText:  # notifies the player if the bonus points powerup has been activated
                 draw_text_topleft("Bonus Points!", subtitle_font, (0, 0, 0), SCREEN, 400, 150)
 
             # checks if the player interacts with a normal obstacle and lowers the amount of lives
