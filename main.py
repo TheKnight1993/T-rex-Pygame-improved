@@ -128,7 +128,7 @@ def mainLoop():  # the loop that plays the game
 
         # checks if there are no obstacles on screen and randomly chooses a new obstacle
         if len(obstacles) == 0:
-            randomChoice = random.randint(1, 100)
+            randomChoice = random.randint(0, 100)
             powerup.rect.y = 250
             if randomChoice <= 32:
                 obstacles.append(SmallCactus(game_textures.SMALL_CACTI, SCREEN_WIDTH))
@@ -244,6 +244,8 @@ def mainMenu():  # the main menu, runs the game and has access to different subm
         SCREEN.blit(background_image, (0, 0))
         draw_text_topleft("The T-Rex Runner Game", title_font, (50, 50, 50), SCREEN, 100, 50)
         draw_text_topleft("Main menu", subtitle_font, (50, 50, 50), SCREEN, 110, 85)
+        draw_text_topleft("Made by Ziggy, Kevin and Rodin", subtitle_font, (50, 50, 50), SCREEN, 25, 550)
+
 
         draw_text_topright(str(get_coins()), price_font, (50, 50, 50), SCREEN, 1050, 47)
         coin = pygame.image.load('Assets/images/coin.jpg').convert_alpha()
